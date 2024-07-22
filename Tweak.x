@@ -2,6 +2,7 @@
 #import <YouTubeHeader/YTSettingsViewController.h>
 #import <YouTubeHeader/YTSettingsSectionItem.h>
 #import <YouTubeHeader/YTSettingsSectionItemManager.h>
+#import <rootless.h>
 
 #define TweakName @"YouTubeTweak"
 #define EnabledKey @"TweakEnabled"
@@ -34,7 +35,7 @@ NSBundle *TweakBundle() {
         if (tweakBundlePath)
             bundle = [NSBundle bundleWithPath:tweakBundlePath];
         else
-            bundle = [NSBundle bundleWithPath:@"/Library/Application Support/" TweakName ".bundle"];
+            bundle = [NSBundle bundleWithPath:ROOT_PATH_NS(@"/Library/Application Support/" TweakName ".bundle")];
     });
     return bundle;
 }
