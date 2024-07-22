@@ -164,7 +164,10 @@ NSBundle *TweakBundle() {
     }];
     [sectionItems addObject:booleanGroup];
 
-    [settingsViewController setSectionItems:sectionItems forCategory:TweakSection title:TweakName titleDescription:LOC(@"TITLE DESCRIPTION") headerHidden:NO];
+    if ([settingsViewController respondsToSelector:@selector(setSectionItems:forCategory:title:icon:titleDescription:headerHidden:)])
+        [settingsViewController setSectionItems:sectionItems forCategory:TweakSection title:TweakName icon:nil titleDescription:LOC(@"TITLE DESCRIPTION") headerHidden:NO];
+    else
+        [settingsViewController setSectionItems:sectionItems forCategory:TweakSection title:TweakName titleDescription:LOC(@"TITLE DESCRIPTION") headerHidden:NO];
 }
 
 - (void)updateSectionForCategory:(NSUInteger)category withEntry:(id)entry {
