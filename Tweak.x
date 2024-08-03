@@ -56,15 +56,15 @@ NSBundle *TweakBundle() {
 
 %end
 
-// This hook is specific to Boolean option (group)
-// If your tweak does not need that setting type, you don't need this hook
-%hook YTSettingsSectionController
+// This hook is for pushing YTSettingsPickerViewController with the (boolean) options that have no default selection
+// If you uncomment headerItem code below, you don't need this hook
+// %hook YTSettingsSectionController
 
-- (void)setSelectedItem:(NSUInteger)selectedItem {
-    if (selectedItem != NSNotFound) %orig;
-}
+// - (void)setSelectedItem:(NSUInteger)selectedItem {
+//     if (selectedItem != NSNotFound) %orig;
+// }
 
-%end
+// %end
 
 %hook YTSettingsSectionItemManager
 
@@ -114,7 +114,11 @@ NSBundle *TweakBundle() {
             }
         }
         selectBlock:^BOOL (YTSettingsCell *cell, NSUInteger arg1) {
+            NSString *title = LOC(@"PICKABLE OPTION");
+            // YTSettingsSectionItem *headerItem = [YTSettingsSectionItemClass itemWithTitle:title accessibilityIdentifier:nil detailTextBlock:nil selectBlock:nil];
+            // headerItem.enabled = NO;
             NSArray <YTSettingsSectionItem *> *rows = @[
+                // headerItem,
                 [YTSettingsSectionItemClass checkmarkItemWithTitle:LOC(@"SUBOPTION 1") titleDescription:LOC(@"SUBOPTION 1 DESC") selectBlock:^BOOL (YTSettingsCell *cell, NSUInteger arg1) {
                     [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:Option2Key];
                     [settingsViewController reloadData];
@@ -131,7 +135,7 @@ NSBundle *TweakBundle() {
                     return YES;
                 }]
             ];
-            YTSettingsPickerViewController *picker = [[%c(YTSettingsPickerViewController) alloc] initWithNavTitle:LOC(@"PICKABLE OPTION") pickerSectionTitle:nil rows:rows selectedItemIndex:GetSelection(Option2Key) parentResponder:[self parentResponder]];
+            YTSettingsPickerViewController *picker = [[%c(YTSettingsPickerViewController) alloc] initWithNavTitle:title pickerSectionTitle:nil rows:rows selectedItemIndex:GetSelection(Option2Key) parentResponder:[self parentResponder]];
             [settingsViewController pushViewController:picker];
             return YES;
         }];
