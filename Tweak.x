@@ -1,3 +1,4 @@
+#import <YouTubeHeader/YTSettingsGroupData.h>
 #import <YouTubeHeader/YTSettingsPickerViewController.h>
 #import <YouTubeHeader/YTSettingsViewController.h>
 #import <YouTubeHeader/YTSettingsSectionItem.h>
@@ -40,11 +41,25 @@ NSBundle *TweakBundle() {
     return bundle;
 }
 
+%hook YTSettingsGroupData
+
+- (NSArray <NSNumber *> *)orderedCategories {
+    if (self.type != 1 || class_getClassMethod(objc_getClass("YTSettingsGroupData"), @selector(tweaks)))
+        return %orig;
+    NSMutableArray <NSNumber *> *mutableCategories = %orig.mutableCopy;
+
+    // Choose your settings insertion index (when grouped settings experiment is enabled)
+    [mutableCategories insertObject:@(TweakSection) atIndex:0];
+    return mutableCategories.copy;
+}
+
+%end
+
 %hook YTAppSettingsPresentationData
 
-+ (NSArray *)settingsCategoryOrder {
-    NSArray *order = %orig;
-    NSMutableArray *mutableOrder = [order mutableCopy];
++ (NSArray <NSNumber *> *)settingsCategoryOrder {
+    NSArray <NSNumber *> *order = %orig;
+    NSMutableArray <NSNumber *> *mutableOrder = [order mutableCopy];
 
     // Choose your settings insertion index
     NSUInteger insertIndex = [order indexOfObject:@(1)]; // "General" index is 1
@@ -169,9 +184,13 @@ NSBundle *TweakBundle() {
     }];
     [sectionItems addObject:booleanGroup];
 
-    if ([settingsViewController respondsToSelector:@selector(setSectionItems:forCategory:title:icon:titleDescription:headerHidden:)])
-        [settingsViewController setSectionItems:sectionItems forCategory:TweakSection title:TweakName icon:nil titleDescription:LOC(@"TITLE DESCRIPTION") headerHidden:NO];
-    else
+    if ([settingsViewController respondsToSelector:@selector(setSectionItems:forCategory:title:icon:titleDescription:headerHidden:)]) {
+        // Choose your settings icon, or pass nil for default icon
+        // Check out https://github.com/PoomSmart/YTIcons for choosing your icon
+        YTIIcon *icon = [%c(YTIIcon) new];
+        // icon.iconType = <some-icon-type>;
+        [settingsViewController setSectionItems:sectionItems forCategory:TweakSection title:TweakName icon:icon titleDescription:LOC(@"TITLE DESCRIPTION") headerHidden:NO];
+    } else
         [settingsViewController setSectionItems:sectionItems forCategory:TweakSection title:TweakName titleDescription:LOC(@"TITLE DESCRIPTION") headerHidden:NO];
 }
 
