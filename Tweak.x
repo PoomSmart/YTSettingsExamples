@@ -59,14 +59,16 @@ NSBundle *TweakBundle() {
 
 + (NSArray <NSNumber *> *)settingsCategoryOrder {
     NSArray <NSNumber *> *order = %orig;
-    NSMutableArray <NSNumber *> *mutableOrder = [order mutableCopy];
 
     // Choose your settings insertion index
     NSUInteger insertIndex = [order indexOfObject:@(1)]; // "General" index is 1
-    if (insertIndex != NSNotFound)
+    if (insertIndex != NSNotFound) {
+        NSMutableArray <NSNumber *> *mutableOrder = [order mutableCopy];
         [mutableOrder insertObject:@(TweakSection) atIndex:insertIndex + 1];
+        order = mutableOrder.copy;
+    }
 
-    return mutableOrder;
+    return order;
 }
 
 %end
