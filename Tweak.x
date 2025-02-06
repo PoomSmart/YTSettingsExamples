@@ -157,7 +157,11 @@ NSBundle *TweakBundle() {
 
     // Boolean option (group)
     YTSettingsSectionItem *booleanGroup = [YTSettingsSectionItemClass itemWithTitle:LOC(@"BOOLEAN GROUP OPTIONS") accessibilityIdentifier:nil detailTextBlock:nil selectBlock:^BOOL (YTSettingsCell *cell, NSUInteger arg1) {
+        NSString *title = LOC(@"BOOLEAN GROUP TITLE");
+        // YTSettingsSectionItem *headerItem = [YTSettingsSectionItemClass itemWithTitle:title accessibilityIdentifier:nil detailTextBlock:nil selectBlock:nil];
+        // headerItem.enabled = NO;
         NSArray <YTSettingsSectionItem *> *rows = @[
+            // headerItem,
             [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"OPTION 3")
                 titleDescription:LOC(@"OPTION 3 DESC")
                 accessibilityIdentifier:nil
@@ -177,7 +181,7 @@ NSBundle *TweakBundle() {
                 }
                 settingItemId:0]
         ];
-        YTSettingsPickerViewController *picker = [[%c(YTSettingsPickerViewController) alloc] initWithNavTitle:LOC(@"BOOLEAN GROUP TITLE") pickerSectionTitle:nil rows:rows selectedItemIndex:NSNotFound parentResponder:[self parentResponder]];
+        YTSettingsPickerViewController *picker = [[%c(YTSettingsPickerViewController) alloc] initWithNavTitle:title pickerSectionTitle:nil rows:rows selectedItemIndex:0 /* NSNotFound */ parentResponder:[self parentResponder]];
         [settingsViewController pushViewController:picker];
         return YES;
     }];
